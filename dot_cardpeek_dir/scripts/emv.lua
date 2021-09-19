@@ -1148,7 +1148,7 @@ function emv_process_cplc(cardenv)
 	sw,resp = card.get_data(0x9F7F)
 	if sw == 0x9000 then
 	   cplc_tag, cplc_data = asn1.split(resp)
-	   CPLC      = nodes.append(cardenv,{classname="block", label="cpcl data", id="9F7F", size=#cplc_data})
+	   CPLC      = nodes.append(cardenv,{classname="block", label="cplc data", id="9F7F", size=#cplc_data})
 	   nodes.set_attribute(CPLC,"val",cplc_data) 
 	   pos = 0
 	   for i=1,#CPLC_DATA do

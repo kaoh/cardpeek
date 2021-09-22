@@ -203,7 +203,7 @@ function process_moneo(card_ctx)
 	sw, resp = card.select(AID,nil,0)
 
 	if (#resp==0) then
-	   return FALSE
+	   return false
 	end
 
 	-- this is for a strange bug seen in some moneo cards: --

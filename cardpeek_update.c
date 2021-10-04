@@ -646,7 +646,7 @@ int cardpeek_update_perform(void)
 
                     if (rename(local_dnld,local_file)==0)
                     {
-                        log_printf(LOG_INFO,"Successfuly updated %s", local_file);
+                        log_printf(LOG_INFO,"Successfully updated %s", local_file);
                         updated++;
                     }
                     else

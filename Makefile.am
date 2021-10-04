@@ -97,7 +97,8 @@ dist-hook:
 
 dot_cardpeek.tar.gz:    dot_cardpeek_dir	
 			@echo "  TAR      $<"
-			$(AM_V_at)tar --help|grep -q sort= && taropts="--sort=name --clamp-mtime --format=gnu --owner=0 --group=0" ; tar -c $$taropts --directory $(srcdir)/dot_cardpeek_dir --exclude=.svn --exclude='\._*' . | gzip -cn9 > dot_cardpeek.tar.gz
+			$(eval SOURCE_DATE_EPOCH := "$(shell git log -1 --pretty=%ct)")
+			$(AM_V_at)tar --help|grep -q sort= && taropts="--sort=name --clamp-mtime --mtime=@$(SOURCE_DATE_EPOCH) --format=gnu --owner=0 --group=0" ; tar -c $$taropts --directory $(srcdir)/dot_cardpeek_dir --exclude=.svn --exclude='\._*' . | gzip -cn9 > dot_cardpeek.tar.gz
 
 cardpeek_resources.$(OBJEXT):	dot_cardpeek.tar.gz $(ICONS) AUTHORS COPYING cardpeek_resources.gresource.xml
 			@echo "  GLIB_COMPILE_RESOURCES cardpeek_resources.gresource.xml"

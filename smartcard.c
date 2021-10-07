@@ -93,7 +93,9 @@ const char **cardmanager_reader_name_list(cardmanager_t* cm)
 #include "ui.h"
 #include "drivers/null_driver.c"
 #include "drivers/pcsc_driver.c"
+#ifndef _WIN32
 #include "drivers/usbserial_driver.c"
+#endif
 #include "drivers/replay_driver.c"
 
 cardreader_t* cardreader_new(const char *card_reader_name)
@@ -111,11 +113,13 @@ cardreader_t* cardreader_new(const char *card_reader_name)
     reader->name=strdup(card_reader_name);
     if (pcsc_initialize(reader)==0) return NULL;
   }
+#ifndef _WIN32
   else if (strncmp(card_reader_name,"usbserial://",12)==0)
   {
     reader->name=strdup(card_reader_name);
     if (usbserial_initialize(reader)==0) return NULL;
   }
+#endif
   else if (strncmp(card_reader_name,"replay://",9)==0)
   {
     reader->name=strdup(card_reader_name);

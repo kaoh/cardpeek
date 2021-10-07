@@ -116,12 +116,12 @@ static int install_dot_file(void)
             a_sprintf(astr,"Some scripts in '%s' seem to be outdated or missing\n"
                       "Do you want to upgrade these scripts?",cardpeek_dir);
 
-        if ((response = ui_question(a_strval(astr),"Yes","No","No, don't ask me again",NULL))>=0)
+        if ((response = ui_question(a_strval(astr),"Yes","No","No, don't ask me again",NULL))!=0)
         {
             log_printf(LOG_DEBUG,"The files in '%s' will not be upgraded.",cardpeek_dir);
             a_strfree(astr);
 
-            if (response==0)
+            if (response==2)
             {
                 if ((f=g_fopen(version_file,"w"))!=NULL)
                 {

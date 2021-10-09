@@ -16,6 +16,7 @@ Dans cette version, l’application est capable de lire le contenu des cartes su
 * Les passports électroniques/biométriques avec une sécurité BAC.
 * La carte d'identité belge (eID)
 * Les cartes SIM GSM (beta)
+* Les cartes USIM
 * Les cartes Mifare (beta)
 * Les cartes conducteur tachygraphes
 * Les cartes OpenPGP (beta)

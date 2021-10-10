@@ -13,6 +13,16 @@ DEST=cardpeek-win${ARCH}
 rm -rf ${DEST}
 mkdir ${DEST}
 cp cardpeek.exe ${DEST}
+
+if [ ${ARCH} -eq 32 ]
+then
+  cp /mingw${ARCH}/bin/lua53.dll ${DEST}
+  cp /mingw${ARCH}/bin/libgcc_s_dw2-1.dll ${DEST}
+else
+  cp /mingw${ARCH}/bin/lua54.dll ${DEST}
+  cp /mingw${ARCH}/bin/libgcc_s_seh-1.dll ${DEST}
+fi
+
 cp /mingw${ARCH}/bin/libcairo-2.dll ${DEST}
 cp /mingw${ARCH}/bin/libcrypto-1_1${DLL_CLASSIFIER}.dll  ${DEST}
 cp /mingw${ARCH}/bin/libcurl-4.dll ${DEST}
@@ -23,10 +33,8 @@ cp /mingw${ARCH}/bin/libglib-2.0-0.dll ${DEST}
 cp /mingw${ARCH}/bin/libgobject-2.0-0.dll ${DEST}
 cp /mingw${ARCH}/bin/libgtk-3-0.dll ${DEST}
 cp /mingw${ARCH}/bin/libiconv-2.dll ${DEST}
-cp /mingw${ARCH}/bin/lua54.dll ${DEST}
 cp /mingw${ARCH}/bin/libpango-1.0-0.dll ${DEST}
 cp /mingw${ARCH}/bin/libreadline8.dll ${DEST}
-cp /mingw${ARCH}/bin/libgcc_s_seh-1.dll ${DEST}
 cp /mingw${ARCH}/bin/libfontconfig-1.dll ${DEST}
 cp /mingw${ARCH}/bin/libfreetype-6.dll ${DEST}
 cp /mingw${ARCH}/bin/libpixman-1-0.dll ${DEST}
@@ -68,7 +76,17 @@ cp doc/cardpeek_ref.en.pdf ${DEST}
 
 # icons for gdk
 mkdir ${DEST}/share
-cp -R /mingw${ARCH}/share/icons ${DEST}/share/
+declare -a icons=("icon-theme.cache" "index.theme" "dialog-question" "edit-redo" "edit-clear" "document-open" "application-exit" "document-save-as" "help-about" "system-run" "pan-down")
+for img in "${icons[@]}"; do
+  for file in `find /mingw${ARCH}/share/icons -name "*${img}*"`; do 
+    PART=`echo $(dirname ${file}) | cut -d'/' -f4-`
+    mkdir -p ${DEST}/share/${PART}
+    cp $file ${DEST}/share/${PART}
+  done
+done
+rm -rf ${DEST}/share/icons/hicolor
+
+
 # image loaders needed for gdk
 mkdir ${DEST}/lib
 cp -R /mingw${ARCH}/lib/gdk-pixbuf-2.0 ${DEST}/lib/

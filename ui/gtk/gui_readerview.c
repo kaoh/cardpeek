@@ -75,7 +75,7 @@ toolbar_item_t TB_READER_VIEW[] = {
 	{ "reader-view-reset", 		"edit-redo", "Reset", G_CALLBACK(gui_toolbar_run_command_cb), "card.warm_reset()", 
 	  "Reset the card in the reader." },
 	{ "reader-view-disconnect", 	"gtk-disconnect", "Disconnect", G_CALLBACK(gui_toolbar_run_command_cb), "card.disconnect()", 
-	  "Diconnect the card in the reader." },
+	  "Disconnect the card in the reader." },
 	{ NULL,				TOOLBAR_ITEM_SEPARATOR, NULL, NULL, NULL, NULL },
 	{ "reader-view-clear", 		"edit-clear", "Clear", G_CALLBACK(gui_toolbar_run_command_cb), "card.log_clear()", 
 	  "Clear the reader view." },

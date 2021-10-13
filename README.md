@@ -15,7 +15,8 @@ The tool currently reads the contents of :
 * [Navigo](doc/navigo.md) (Paris), MOBIB (Belgium), RavKav (Israel) and other public transport cards of the Calypso family - _[screenshot](doc/sample-navigo.jpg)_
 * The French health card "Vitale 2"
 * Electronic/Biometric passports in BAC security mode
-* GSM SIM cards (but not USIM data)
+* GSM SIM cards
+* USIM cards
 * The Belgian eID card
 * Driver tachograph cards
 * OpenPGP cards (beta)

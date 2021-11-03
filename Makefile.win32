@@ -28,7 +28,7 @@ PKG_CFLAGS = `$(CCPRE)pkg-config --cflags $(PKG_LIST) | sed "s:-I/$(MPLATFORM):-
 PKG_LIBS = `$(CCPRE)pkg-config --libs $(PKG_LIST) | sed "s:-L/$(MPLATFORM):-L$(DEPS):g"`
 
 CFLAGS = -Wall -pedantic -Wno-overlength-strings -Wno-long-long -DCURL_STATICLIB -D__USE_MINGW_ANSI_STDIO -I . -I $(DEPS)/include -I ./win32/ $(PKG_CFLAGS)
-LIBS = $(PKG_LIBS) -L$(DEPS)/bin -L./win32/ -lwinscard -lreadline -lncurses
+LIBS = $(PKG_LIBS) -L./win32/ -L$(DEPS)/bin -lwinscard -lreadline -lncurses
 
 build:		cardpeek.exe
 
@@ -49,7 +49,7 @@ win32/resource.o:	win32/resource.rc
 
 #TODO: shouldn't be needed. To be confirmed. (It seems at least that it's not needed to compile)
 #win32/libwinscard.a:	win32/winscard.def win32/winscard.h
-#			$(CCPRE)dlltool -k -d win32/winscard.def -l win32/libwinscard.a win32/winscard.dll
+#			$(CCPRE)dlltool -k -d win32/winscard.def -l win32/libwinscard.a /c/Windows/System32/winscard.dll
 
 clean:			
 			rm -f $(OBJECTS) cardpeek.exe win32/libwinscard.a dot_cardpeek.tar.gz *~ cardpeek_resources.c

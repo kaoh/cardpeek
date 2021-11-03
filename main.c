@@ -219,14 +219,22 @@ static int install_dot_file(void)
 
     log_printf(LOG_INFO,"Created dot_cardpeek.tar.gz");
     log_printf(LOG_INFO,"Creating files in %s", cardpeek_dir);
+#ifdef _WIN32
+    status = system("cmd /C tar xzvf dot_cardpeek.tar.gz");
+#else
     status = system("tar xzvf dot_cardpeek.tar.gz");
+#endif
     log_printf(LOG_INFO,"'tar xzvf dot_cardpeek.tar.gz' returned %i",status);
     if (status!=0)
     {
         ui_question("Extraction of dot_cardpeek.tar.gz failed, aborting.","Ok",NULL);
         return 0;
     }
+#ifdef _WIN32
+    status = system("del dot_cardpeek.tar.gz");
+#else
     status = system("rm dot_cardpeek.tar.gz");
+#endif
     log_printf(LOG_INFO,"'rm dot_cardpeek.tar.gz' returned %i",status);
 
     ui_question("Note: The files have been created.\nIt is recommended that you quit and restart cardpeek, for changes to take effect.","Ok",NULL);
@@ -386,7 +394,7 @@ int cardpeek_main(int argc, char **argv)
     char* exec_command = NULL;
     ui_driver_t *ui_driver = ui_driver_for_gtk();
     int detach_flag = 0;
-    int generate_dot_cardpeek_flag = 0;
+    int generate_dot_cardpeek_flag = 1;
    
 
 #if !GLIB_CHECK_VERSION(2,36,0)

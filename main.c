@@ -71,7 +71,7 @@ static void check_cardpeek_dir_exists(void)
         a_sprintf(astr,"Could not find the directory '%s'.\nCardpeek is not correctly installed on your system.", cardpeek_dir);
         log_printf(LOG_ERROR,"Cardpeek is not correctly installed: could not find '%s'.", cardpeek_dir);
         ui_question(a_strval(astr),"OK",NULL);
-	a_strfree(astr);
+	    a_strfree(astr);
     }
 }
 
@@ -219,23 +219,31 @@ static int install_dot_file(void)
 
     log_printf(LOG_INFO,"Created dot_cardpeek.tar.gz");
     log_printf(LOG_INFO,"Creating files in %s", cardpeek_dir);
-#ifdef _WIN32
-    status = system("cmd /C tar xzvf dot_cardpeek.tar.gz");
-#else
+#ifndef _WIN32
     status = system("tar xzvf dot_cardpeek.tar.gz");
+#else
+    // try to use tar
+    status = system("cmd /C tar xzvf dot_cardpeek.tar.gz");
+    if (status!=0) {
+    	status = system("cmd /C 7z");
+    	if (status!=0) {
+            ui_question("tar not found, aborting. Please install 7zip as alternative and add it to the PATH variable.","Ok",NULL);
+            return 0;
+    	}
+        // use 7z
+    	status = system("cmd /C 7z e -y dot_cardpeek.tar.gz");
+    	status = system("cmd /C 7z x -y dot_cardpeek.tar");
+    }
 #endif
-    log_printf(LOG_INFO,"'tar xzvf dot_cardpeek.tar.gz' returned %i",status);
+    log_printf(LOG_INFO,"Extraction 'dot_cardpeek.tar.gz' returned %i",status);
     if (status!=0)
     {
         ui_question("Extraction of dot_cardpeek.tar.gz failed, aborting.","Ok",NULL);
         return 0;
     }
-#ifdef _WIN32
-    status = system("del dot_cardpeek.tar.gz");
-#else
-    status = system("rm dot_cardpeek.tar.gz");
-#endif
-    log_printf(LOG_INFO,"'rm dot_cardpeek.tar.gz' returned %i",status);
+    if (remove("dot_cardpeek.tar.gz")) {
+    	log_printf(LOG_ERROR,"Removing 'dot_cardpeek.tar.gz' failed.");
+    }
 
     ui_question("Note: The files have been created.\nIt is recommended that you quit and restart cardpeek, for changes to take effect.","Ok",NULL);
     return 1;
@@ -394,7 +402,7 @@ int cardpeek_main(int argc, char **argv)
     char* exec_command = NULL;
     ui_driver_t *ui_driver = ui_driver_for_gtk();
     int detach_flag = 0;
-    int generate_dot_cardpeek_flag = 1;
+    int generate_dot_cardpeek_flag = 0;
    
 
 #if !GLIB_CHECK_VERSION(2,36,0)

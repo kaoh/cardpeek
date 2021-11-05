@@ -27,8 +27,6 @@ It can also read the following cards with limited interpretation of data:
 
 ## Build
 
-**!!! Produced binaries do not run yet - See [issue #1](https://github.com/ipamo/cardpeek/issues/1) !!!**
-
 - [Build instructions for Debian](doc/build-debian.md), either for the local Debian host, or for cross-compilation to Windows using mingw-w64.
 - [Build instructions for Windows](doc/build-windows.md), using msys2.
 - [Build instructions for MacOSX](doc/build-mac.md).

@@ -1,8 +1,6 @@
 Build on Windows
 ================
 
-**!!! Produced binaries do not run yet - See [issue #1](https://github.com/ipamo/cardpeek/issues/1) !!!**
-
 ## Pre-requisites
 
 Download and install [msys2](https://www.msys2.org/), which provide gcc toolchains for 32-bit and 64-bit Windows (both powered by MinGW-w64).
@@ -22,8 +20,15 @@ Clean:
 Build:
 
     make -f Makefile.win32
+	
+Install locally:
+	
     make install -f Makefile.win32
 
+Build release:
+
+    ./package_windows.sh
+	
 ## Build for 64-bit Windows
 
 Open a 64-bit mingw shell (usually `C:\msys64\mingw64.exe`).
@@ -39,4 +44,11 @@ Clean:
 Build:
 
     make -f Makefile.win32 DEPS=/mingw64 MPLATFORM=mingw64 TARGET="/C/Program Files/Cardpeek"
+	
+Install locally:
+
     make install -f Makefile.win32 DEPS=/mingw64 MPLATFORM=mingw64 TARGET="/C/Program Files/Cardpeek"
+
+Build release:
+
+    ./package_windows.sh

@@ -16,13 +16,12 @@ cp cardpeek.exe ${DEST}
 
 if [ ${ARCH} -eq 32 ]
 then
-  cp /mingw${ARCH}/bin/lua53.dll ${DEST}
   cp /mingw${ARCH}/bin/libgcc_s_dw2-1.dll ${DEST}
 else
-  cp /mingw${ARCH}/bin/lua54.dll ${DEST}
   cp /mingw${ARCH}/bin/libgcc_s_seh-1.dll ${DEST}
 fi
 
+cp /mingw${ARCH}/bin/lua54.dll ${DEST}
 cp /mingw${ARCH}/bin/libcairo-2.dll ${DEST}
 cp /mingw${ARCH}/bin/libcrypto-1_1${DLL_CLASSIFIER}.dll  ${DEST}
 cp /mingw${ARCH}/bin/libcurl-4.dll ${DEST}

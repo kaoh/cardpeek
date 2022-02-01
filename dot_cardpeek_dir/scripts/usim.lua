@@ -962,6 +962,9 @@ if card.connect() then
 	CARD = card.tree_startup("USIM")
 
 	PIN = ui.readline("Enter PIN for verification (or keep empty to avoid PIN verification)",8,"")
+	if PIN == nil then
+		goto exit
+	end
 	if PIN~="" then
 		PIN=pin_wrap(PIN)
 		sw, resp = card.send(bytes.new(8,"00 20 00 01 08",PIN)) -- unblock pin = XXXX

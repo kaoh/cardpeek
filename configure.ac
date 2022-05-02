@@ -59,18 +59,22 @@ AS_CASE([$host],
 )
 
 if test "$HOST_TYPE" = "darwin"; then
-    if test ! -e "/Applications/Xcode.app/"; then
-        AC_MSG_ERROR([Could not find /Applications/Xcode.app/.
-        This program requires the PCSC framework that is distributed with XCode on OS X.
-        Please install XCode first.])
+    if test -e `brew --prefix pcsc-lite`; then
+        PCSC_HEADERS=`brew --prefix pcsc-lite`/include/PCSC
+    else
+        if test ! -e "/Applications/Xcode.app/"; then
+            AC_MSG_ERROR([Could not find /Applications/Xcode.app/.
+            This program requires the PCSC framework that is distributed with XCode on OS X.
+            Please install XCode first.])
+        fi
+        PCSC_HEADERS=`ls -d /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/*.sdk/System/Library/Frameworks/PCSC.framework/Versions/Current/Headers/ | sort | head -1`
     fi
-    PCSC_HEADERS=`ls -d /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/*.sdk/System/Library/Frameworks/PCSC.framework/Versions/Current/Headers/ | sort | head -1`
-    PCSC_CFLAGS="-Wno-deprecated-declarations -I$PCSC_HEADERS"
-    PCSC_LIBS="-framework PCSC"
+        PCSC_CFLAGS="-Wno-deprecated-declarations -I$PCSC_HEADERS"
+        PCSC_LIBS="-framework PCSC"
 else
     PKG_CHECK_MODULES([PCSC],[libpcsclite])
     AM_COND_IF([OSX_BUNDLE],[
-        AC_MSG_ERROR([Bundles are only available on MacOSX (--enable-osx-bunlde).])
+        AC_MSG_ERROR([Bundles are only available on MacOSX (--enable-osx-bundle).])
     ])
 fi
 

@@ -53,7 +53,7 @@ BCD_EXTENDED = { "0", "1", "2", "3",
                  "8", "9", "*", "#",
                  "-", "?", "!", "F" }
 
-function GSM_bcd_swap(data)
+function GSM_bcd_swap(data, ignoreMsbF)
     local i, v
     local r = ""
 
@@ -65,7 +65,7 @@ function GSM_bcd_swap(data)
             break
         end
         r = r .. BCD_EXTENDED[1 + lsb]
-        if msb == 0xF then
+        if msb == 0xF and not ignoreMsbF then
             break
         end
         r = r .. BCD_EXTENDED[1 + msb]
@@ -213,16 +213,16 @@ function USIM_app_dir(node, data)
 end
 
 function USIM_ICCID(node, data)
-    return node:set_attribute("alt", "(89)" .. GSM_bcd_swap(data):sub(3, -1))
+    return node:set_attribute("alt", "(89)" .. GSM_bcd_swap(data, false):sub(3, -1))
 end
 
 function USIM_IMSI(node, data)
-    return node:set_attribute("alt", GSM_bcd_swap(data):sub(4, -1))
+    return node:set_attribute("alt", GSM_bcd_swap(data, false):sub(4, -1))
 end
 
 function USIM_decode_PLMN(encoded)
     local mcc12_mcc3Mnc3_mnc12
-    mcc12_mcc3Mnc3_mnc12 = GSM_bcd_swap(encoded);
+    mcc12_mcc3Mnc3_mnc12 = GSM_bcd_swap(encoded, true);
     return string.sub(mcc12_mcc3Mnc3_mnc12, 1, 2) .. string.sub(mcc12_mcc3Mnc3_mnc12, 3, 3) ..
             string.sub(mcc12_mcc3Mnc3_mnc12, 5, 6) .. string.sub(mcc12_mcc3Mnc3_mnc12, 4, 4)
 end
@@ -397,7 +397,7 @@ function USIM_PLMNwAcT(node, data)
         table.insert(plmns, { plmn, technologies })
     end
     for i1, value1 in ipairs(plmns) do
-        r = r .. "MCCMNC " .. value1[1] .. ": "
+        r = r .. "MCCMNC: " .. value1[1] .. ", AcT: "
         for i2, value2 in ipairs(value1[2]) do
             r = r .. value2
             if i2 ~= #value1[2] then
@@ -424,9 +424,18 @@ function USIM_MSISDN(node, data)
     if alpha_len then
         r = GSM_tostring(bytes.sub(data, 0, alpha_len - 1))
     end
-    r = r .. ": " .. GSM_bcd_swap(bytes.sub(data, alpha_len + 2, alpha_len + 12))
+    r = r .. ": " .. GSM_bcd_swap(bytes.sub(data, alpha_len + 2, alpha_len + 12), false)
     return node:set_attribute("alt", r)
 end
+
+function USIM_OPL(node, data)
+    plmn = bytes.sub(data, 0, 2)
+    local r = ""
+    r = r .. "MCCMNC " .. USIM_decode_PLMN(plmn)
+    r = r .. ", LAC/TAC " .. tostring(bytes.sub(data, 3, 6)) .. ", Rec # " .. bytes.tonumber(bytes.sub(data, 7, 7))
+    return node:set_attribute("alt", r)
+end
+
 
 function GSM_SMS_decode_ucs2(node, data)
     local text = ""
@@ -537,7 +546,7 @@ function GSM_SMS_deliver_header(node, data)
 end
 
 function GSM_number(node, data)
-    local bcd = GSM_bcd_swap(data)
+    local bcd = GSM_bcd_swap(data, false)
 
     if (bcd[#bcd] == 'F') then
         node:set_attribute("alt", string.sub(bcd, 1, -1))
@@ -794,7 +803,7 @@ USIM_ADF_MAP = {
         { "file", "6F06", "Access Rule Reference", USIM_AccessRule },
         { "file", "6FC4", "Network Parameters", nil },
         { "file", "6FC5", "PLMN Network Name", nil },
-        { "file", "6FC6", "Operator PLMN List", nil },
+        { "file", "6FC6", "Operator PLMN List", USIM_OPL },
         { "file", "6FC7", "Mailbox Dialling Numbers", USIM_MSISDN },
         { "file", "6FC8", "Extension6", nil },
         { "file", "6FC9", "Mailbox Identifier", nil },
@@ -818,7 +827,7 @@ USIM_ADF_MAP = {
         { "file", "6FD7", "MBMS Service Keys List", nil },
         { "file", "6FD8", "MBMS User Key", nil },
         { "file", "6FDA", "GBA NAF List", nil },
-        { "file", "6FD9", "Equivalent HPLMN", nil },
+        { "file", "6FD9", "Equivalent HPLMN", USIM_PLMN },
         { "file", "6FDB", "Equivalent HPLMN Presentation Indication", nil },
         { "file", "6FDC", "Last RPLMN Selection Indication", nil },
         { "file", "6FDD", "NAF Key Centre Address", nil },

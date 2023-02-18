@@ -207,7 +207,7 @@ function USIM_app_dir(node, data)
     aid = tostring(v)
     log.print(log.INFO, "AID: " .. aid)
     -- check if USIM ADF
-    if string.find(aid, "A0000000871002", 1, false) then
+    if string.find(aid, "A0000000871002", 1, false) and not USIM_ADF_MAP[2] then
         USIM_ADF_MAP[2] = aid
     end
 end
